@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Student
+from .models import Student, Teacher
 from django.db import connection
 from django.db.models import Q
 
@@ -33,7 +33,7 @@ def student_list_(request):
 You make use of the AND query if you are trying to show two data at the asme time. for instance Dennis AND Peter
 """
 
-def student_list(request):
+def student_list_(request):
     # posts = Student.objects.all()
     posts = Student.objects.filter(first_name='Dennis') & Student.objects.exclude(last_name='Akagha')
     print(posts)
@@ -44,3 +44,18 @@ def student_list(request):
     }
     return render(request, 'student/output.html', context)
 
+# part 4 - UNION QUERIES
+"""
+Note that union removes duplicate rows from the results. 
+"""
+
+def student_list(request):
+    # posts = Student.objects.all()
+    posts = Student.objects.all().values("first_name").union(Teacher.objects.all().values("first_name"))
+    print(posts)
+    print(connection.queries)
+
+    context = {
+        'posts': posts
+    }
+    return render(request, 'student/output.html', context)
