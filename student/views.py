@@ -5,7 +5,7 @@ from django.db.models import Q
 
 
 
-def Student_list_(request):
+def student_list_(request):
     posts = Student.objects.all()
     print(posts)
     print(posts.query)
@@ -17,7 +17,7 @@ def Student_list_(request):
     return render(request, 'student/output.html', context)
 
 
-def Student_list(request):
+def student_list_(request):
     # posts = Student.objects.all()
     posts = Student.objects.filter(Q(last_name__startswith='Akagha') | Q(first_name__startswith='Dennis'))
     print(posts)
@@ -27,3 +27,20 @@ def Student_list(request):
         'posts': posts
     }
     return render(request, 'student/output.html', context)
+
+# part 3 - AND QUERIES
+"""
+You make use of the AND query if you are trying to show two data at the asme time. for instance Dennis AND Peter
+"""
+
+def student_list(request):
+    # posts = Student.objects.all()
+    posts = Student.objects.filter(first_name='Dennis') & Student.objects.exclude(last_name='Akagha')
+    print(posts)
+    print(connection.queries)
+
+    context = {
+        'posts': posts
+    }
+    return render(request, 'student/output.html', context)
+
